@@ -8,7 +8,7 @@ export interface AppConfig {
 export default registerAs(
   'app',
   (): AppConfig => ({
-    port: parseInt(process.env.PORT || '3000', 10),
-    nodeEnv: process.env.NODE_ENV || 'development',
+    port: 3000,
+    nodeEnv: 'development',
   }),
 );
