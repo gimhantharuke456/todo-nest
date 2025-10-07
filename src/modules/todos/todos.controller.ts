@@ -9,6 +9,8 @@ import {
   Query,
   ValidationPipe,
   UsePipes,
+  HttpStatus,
+  HttpCode,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto, TodoPriority } from './dto/create-todo.dto';
@@ -20,6 +22,7 @@ export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() createTodoDto: CreateTodoDto) {
     return this.todosService.create(createTodoDto);
   }
@@ -46,7 +49,7 @@ export class TodosController {
     );
   }
 
-  @Get('statistics')
+  @Get('stats')
   getStatistics() {
     return this.todosService.getStatistics();
   }
@@ -62,16 +65,18 @@ export class TodosController {
   }
 
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.todosService.remove(id);
   }
 
-  @Patch('bulk/complete-all')
+  @Patch('actions/complete-all')
   markAllCompleted() {
     return this.todosService.markAllCompleted();
   }
 
-  @Delete('bulk/completed')
+  @Delete('actions/completed')
+  @HttpCode(HttpStatus.NO_CONTENT)
   deleteCompleted() {
     return this.todosService.deleteCompleted();
   }
