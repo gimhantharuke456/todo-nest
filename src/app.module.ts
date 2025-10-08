@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -16,7 +16,14 @@ import { databaseConfig, appConfig } from './config';
       load: [databaseConfig, appConfig],
       envFilePath: '.env',
     }),
-    DatabaseModule.registerAsync(),
+    DatabaseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        uri: configService.get<string>('DATABASE_URL')!,
+        retryWrites: true,
+      }),
+      inject: [ConfigService],
+    }),
     TodosModule,
   ],
   controllers: [AppController],
